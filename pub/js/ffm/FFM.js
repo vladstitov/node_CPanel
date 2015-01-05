@@ -20,6 +20,7 @@
             this.header.keypress(function (evt) {
                 return _this.onTIEnter(evt);
             });
+
             this.fullView = $('<div><div>').attr('id', 'FFM').appendTo(viewPort);
             this.folderView = $('<div>').addClass('folderview').appendTo(this.fullView);
             setTimeout(function () {
@@ -46,13 +47,15 @@
         };
 
         FFM.prototype.onTIEnter = function (evt) {
-            if (evt.charCode == 13)
-                this.getCurrentFolderDara();
+            if (evt.charCode == 13) {
+                this.getFolderData();
+            }
         };
-        FFM.prototype.getCurrentFolderDara = function () {
+        FFM.prototype.getFolderData = function () {
             var path = this.header.val();
-            if (path && path.length > 2)
-                this.currentFolder = path;
+            if (path.length == 0)
+                this.header.val('/');
+            this.currentFolder = this.header.val();
             this.getCurrentFolderData();
         };
         FFM.prototype.renderError = function (stat) {
@@ -92,6 +95,7 @@
 
         FFM.prototype.getCurrentFolderData = function () {
             var _this = this;
+            this.header.val(this.currentFolder);
             this.R.connector.getFolderContentStats(this.currentFolder, function (data) {
                 return _this.onDataWithStats(data);
             });
@@ -150,9 +154,10 @@
             var ind = folder.lastIndexOf('/');
             folder = folder.substr(0, ind);
             this.header.val(folder);
+            this.getFolderData();
         };
         FFM.prototype.onFolderDoubleClick = function (evt) {
-            this.getCurrentFolderDara();
+            this.getFolderData();
         };
 
         FFM.prototype.getFolderWithStats = function (path) {
