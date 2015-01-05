@@ -4,7 +4,7 @@
         function FFM(viewPort) {
             var _this = this;
             this.viewPort = viewPort;
-            this.currentFolder = 'c:/';
+            this.currentFolder = '/';
             this.R = cpanel.RegA.getInstance();
             this.sPanel = $('<div>').addClass('spanel').appendTo(viewPort);
             this.sButton = $('<div>').html('S').appendTo(this.sPanel).on(CLICK, null, function () {
