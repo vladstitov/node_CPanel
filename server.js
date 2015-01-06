@@ -2,6 +2,42 @@
 //http = require('http'),
 var path = require("path");
 var fs = require("fs");
+var server
+process.stdin.setEncoding('utf8');
+
+var onApplicationStoped = function(){
+  process.stdout.write('FROM_APP_STOPPED\n');
+}
+var onApplicationStarted = function(){
+  process.stdout.write('FROM_APP_STARTED\n');
+}
+
+process.stdin.on('readable', function () {
+    var chunk = process.stdin.read();
+    if (!chunk) return;
+    chunk = chunk.trim();
+    switch (chunk) {
+        case 'stopapplication':		
+          process.stdout.write('FROM_APP_STOPPING\n');
+			server.close();		  
+	 	  setTimeout(onApplicationStoped,2000);
+            break;
+        case 'exitprocess':
+		process.stdout.write('FROM_APP_EXITING\n');
+		process.exit();           
+            break;
+		case 'startapplication':
+		server.createServer(false);
+		setTimeout(onApplicationStarted,2000);
+		break;
+		case 'hello':
+		process.stdout.write('FROM_APPLICATION_HELLO\n');
+		break;
+    }
+}); 
+
+ 
+
 
 //import sys = require('sys');
 var crypto = require('crypto');
@@ -321,55 +357,15 @@ var Server = (function () {
     return Server;
 })();
 
-var server = new Server();
+server = new Server();
 server.createServer(false);
 
 var error;
 var serverBusy = 0;
 
-var exitPr = function () {
-    process.stdout.write('FROMSERVER_EXITPC\n');
-    process.exit();
-};
 
-var stopServer = function () {
-    server.close();
-    process.stdout.write('FROMSERVER_SERVER_STOPED\n');
-};
 
-var tryStopServer = function () {
-    if (serverBusy)
-        process.stdout.write('FROMSERVER_WAIT_RESTART\n');
-    serverBusy = 0;
-    setTimeout(stopServer, 10000);
-};
-
-process.stdin.setEncoding('utf8');
-process.on('uncaughtException', function (err) {
-    error = err.stack;
-    console.error('An uncaught error occurred!', err.stack);
-});
-
-var onData = function (err, stdout, stdin) {
-    console.log('err: ', err);
-    console.log('out :', stdout);
-    console.log('stdin: ', stdin);
-};
-
-process.stdin.on('readable', function () {
-    var chunk = process.stdin.read();
-    if (!chunk)
-        return;
-    chunk = chunk.trim();
-    switch (chunk) {
-        case 'stopserver':
-            tryStopServer();
-            break;
-        case 'exitpc':
-            exitPr();
-            break;
-    }
-}); /*
+/*
 http.createServer(function (req, res) {
 res.writeHead(200, { 'Content-Type': 'text/plain' });
 res.end('Hello World\n');
