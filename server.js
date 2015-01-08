@@ -352,7 +352,9 @@ var Server = (function () {
                 _this.processGet(req, resp, user);
             else if (req.method == 'POST')
                 _this.getPostData(req, resp, user);
-        }).listen(port);
+        }).listen(port,function(){
+					console.log('Server Started');
+		});
     };
     return Server;
 })();
