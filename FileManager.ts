@@ -4,6 +4,7 @@ export class FileManager {
     private fs = fs
     constructor() {
 
+
     }
 
     private onDirFiles(dir: string, err: ErrnoException, files: string[], callBack: Function): void {

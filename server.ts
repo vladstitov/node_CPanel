@@ -10,6 +10,8 @@ server.createServer(false);
 process.stdin.setEncoding('utf8');
 
 var onApplicationStoped = function () {
+
+
     process.stdout.write('FROM_APP_STOPPED\n');
 }
 var onApplicationStarted = function () {
